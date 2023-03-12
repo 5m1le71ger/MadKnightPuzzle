@@ -236,6 +236,12 @@ function BlockCollect(){
             obj.select = sel
         }
     }
+    obj.getSelectCode = function(){
+        if(obj.select == -1){
+            return ''
+        }
+        return obj[obj.select].getCode()
+    }
     obj.add = function(sText){
         const block = Block().init(sText)
         if(block == null){
@@ -252,6 +258,18 @@ function BlockCollect(){
         if(obj.select >= obj.length){
             obj.select = obj.length - 1
         }
+    }
+    obj.delAll = function(){
+        obj.select = -1
+        obj.length = 0
+    }
+    obj.getCodes = function(){
+        let s = ''
+        for(let i=0;i<obj.length;i++){
+            s += ' ' + obj[i].getCode()
+        }
+        s = s.sbustr(1)
+        return s
     }
     obj._getMaxBlockCount = function(sortIndexs,sumValue){
         let v = 0

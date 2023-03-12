@@ -36,6 +36,7 @@
                 let n = Math.trunc((y - 10)/(gridLen*4+20))
                 let index = n*10+m
                 blockCollect.setSelect(index)
+                document.getElementById('label_delete').innerText = blockCollect.getSelectCode()
                 clearCanvas(canvasBlocks,ctxBlocks)
                 drawBlockCollect(blockCollect,ctxBlocks,10,10,canvasBlocks)
                 if(blockCollect.select == -1){
@@ -60,8 +61,37 @@
     function btndelete()
     {
         blockCollect.del()
+        document.getElementById('label_delete').innerText = blockCollect.getSelectCode()
         clearCanvas(canvasBlocks,ctxBlocks)
         drawBlockCollect(blockCollect,ctxBlocks,10,10,canvasBlocks)
+    }
+    function btnsave()
+    {
+        if (!window.localStorage){
+            alert('无法访问本地缓存')
+            return
+        }
+        let s = blockCollect.getCodes()
+        window.localStorage.setItem('blockCollect', s);
+        alert('保存宝石列表成功')
+    }
+    function btnload()
+    {
+        if (!window.localStorage){
+            alert('无法访问本地缓存')
+            return
+        }
+        let s = window.localStorage.getItem('blockCollect');
+        let codes = s.split(' ')
+        blockCollect.delAll()
+        for(let i=0;i<codes.length;i++){
+            blockCollect.add(codes[i])
+        }
+        document.getElementById('btn_delete').disabled = true;
+        document.getElementById('label_delete').innerText = blockCollect.getSelectCode()
+        clearCanvas(canvasBlocks,ctxBlocks)
+        drawBlockCollect(blockCollect,ctxBlocks,10,10,canvasBlocks)
+        alert('载入宝石列表成功')
     }
     function btncalc()
     {
@@ -156,10 +186,10 @@
                                 <button id="btn_add" onclick=btnadd() >添加宝石代码</button> 
                                 <input id="input_add" type="text" size="20" value='' /><br />
                                 <button id="btn_delete" onclick=btndelete()>删除宝石代码</button>
-                                <input id="input_delete" type="text" size="20" value='' /><br />
-<canvas id="canvasBlocks" width="500" height="400" style="border:1px solid #000000;">
-您的浏览器不支持 HTML5 canvas 标签。
-</canvas><br/><br/>
+                                <label id="label_delete" name="label_delete"></label><br/>
+                                <button id="btn_save" onclick=btnsave()>保存宝石列表</button>
+                                <button id="btn_load" onclick=btnload()>载入宝石列表</button><br />
+                                <canvas id="canvasBlocks" width="500" height="400" style="border:1px solid #000000;">您的浏览器不支持 HTML5 canvas 标签。</canvas><br/><br/>
                             </div>
                         </td>
                     </tr>
