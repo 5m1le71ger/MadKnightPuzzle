@@ -1,0 +1,162 @@
+<html>
+<head>
+</head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script type="text/javascript" src="js/mathpc.js"></script>
+<script type="text/javascript" src="js/define.js"></script>
+<script type="text/javascript" src="js/draw.js"></script>
+<script type="text/javascript" src="js/solution.js"></script>
+<script>
+    var blockCollect = BlockCollect()
+    var canvasBlocks = null
+    var ctxBlocks = null
+    var boardSolution = null
+    var select_result = 0
+    var canvasSolution = null
+    var ctxSolution = null
+    document.onreadystatechange = function () {
+        if (document.readyState === "interactive") {
+            canvasBlocks = document.getElementById('canvasBlocks');
+            ctxBlocks = canvasBlocks.getContext('2d');
+            canvasSolution = document.getElementById('canvasSolution');
+            ctxSolution = canvasSolution.getContext('2d');
+            document.getElementById('btn_delete').disabled = true;
+            canvasBlocks.addEventListener('click', function(e) {
+                // var x = event.pageX - canvasBlocks.getBoundingClientRect().left
+                // var y = event.pageY - canvasBlocks.getBoundingClientRect().top
+                var x = event.offsetX
+                var y = event.offsetY
+                if(x < 10 || y < 10){
+                    return
+                }
+                let m = Math.trunc((x - 10)/(gridLen*4))
+                let n = Math.trunc((y - 10)/(gridLen*4+20))
+                let index = n*10+m
+                blockCollect.setSelect(index)
+                clearCanvas(canvasBlocks,ctxBlocks)
+                drawBlockCollect(blockCollect,ctxBlocks,10,10,canvasBlocks)
+                if(blockCollect.select == -1){
+                    document.getElementById('btn_delete').disabled = true;
+                }else{
+                    document.getElementById('btn_delete').disabled = false;
+                }
+            }, false)
+        }
+    }
+
+    function btnadd()
+    {
+        let text = document.getElementById('textarea_code').value;
+        if(!blockCollect.add(text)){
+            alert('错误的输入')
+            return;
+        }
+        clearCanvas(canvasBlocks,ctxBlocks)
+        drawBlockCollect(blockCollect,ctxBlocks,10,10,canvasBlocks)
+    }
+    function btndelete()
+    {
+        blockCollect.del()
+        clearCanvas(canvasBlocks,ctxBlocks)
+        drawBlockCollect(blockCollect,ctxBlocks,10,10,canvasBlocks)
+    }
+    function btncalc()
+    {
+        document.all.label_progress.innerText = ''
+        document.all.label_count.innerText = '';
+        document.all.label_select.innerText = '';
+        clearCanvas(canvasSolution,ctxSolution)
+        document.getElementById("btn_add").setAttribute("disabled", true);
+        solutionAsync(blockCollect, (progressInfo) =>{
+            document.all.label_progress.innerText = progressInfo
+        }).then( bs =>{
+            boardSolution = bs
+            document.all.label_count.innerText = boardSolution.length.toString();
+            select_result = 0;
+            document.all.label_select.innerText = select_result.toString();
+            clearCanvas(canvasSolution,ctxSolution)
+            if(boardSolution.length > 0){
+                drawBoard(boardSolution[select_result],ctxSolution,10,10)
+            }
+            document.all.label_progress.innerText = '完成了100%'
+            document.getElementById("btn_add").removeAttribute ("disabled");
+        })
+    }
+    function btnleft()
+    {
+        if(boardSolution == null){
+            return
+        }
+        if(select_result> 0){
+            select_result --
+            document.all.label_select.innerText = select_result.toString();
+            clearCanvas(canvasSolution,ctxSolution)
+            drawBoard(boardSolution[select_result],ctxSolution,10,10)
+        }
+    }
+    function btnright()
+    {
+        if(boardSolution == null){
+            return
+        }
+        if(select_result < boardSolution.length - 1){
+            select_result ++
+            document.all.label_select.innerText = select_result.toString();
+            clearCanvas(canvasSolution,ctxSolution)
+            drawBoard(boardSolution[select_result],ctxSolution,10,10)
+        }
+    }
+    function btntest()
+    {
+        // let board = Board()
+        // board.init()
+        // console.info(board.dump())
+        // let block = Block()
+        // block.init('131')
+        // board.place(block,2,2)
+        // console.info(board.dump())
+        // let state = board.getGroupState()
+        // let keys = Object.keys(state)
+        // let debug = 1
+        // mathpc.C(10,4,function(buffer){
+        //     console.info(buffer)
+        // })
+        //const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+        mathpc.CAsync(4,2, function(buffer){
+            console.info(buffer)
+        })
+        // mathpc.P(5,2,function(buffer){
+        //     console.info(buffer)
+        // })
+        // blockCollect._traverse(25,function(buffer){
+        //    console.info(buffer)
+        // })
+    }
+    function btntest2()
+    {
+        mathpc.PAll2(4,function(buffer){
+            console.info(buffer)
+        })
+    }
+</script>
+<body>
+<button id="btn_add" onclick=btnadd()>增加</button> 
+<button id="btn_delete" onclick=btndelete()>删除</button><br/>
+<textarea id="textarea_code" rows="10" cols="100" value='660 660 660 660 700 444 260 550' aria-label="blockCode"></textarea>
+<br/><br/>
+<canvas id="canvasBlocks" width="500" height="400" style="border:1px solid #000000;">
+您的浏览器不支持 HTML5 canvas 标签。
+</canvas><br/><br/>
+<button id="btn_calc" onclick=btncalc()>开始计算</button> <label id="label_progress" name="label_progress"></label><br/>
+一共找到 <label id="label_count" name="label_count"></label> 个结果
+<br/>
+<button id="btn_left" onclick=btnleft()><</button>
+<label id="label_select" name="label_select"></label>
+<button id="btn_right" onclick=btnright()>></button><br/>
+<canvas id="canvasSolution" width="500" height="400" style="border:1px solid #000000;">
+您的浏览器不支持 HTML5 canvas 标签。
+</canvas>
+<button id="btn_test" onclick=btntest()>测试</button><br/><br/>
+<button id="btn_test2" onclick=btntest2()>测试2</button><br/><br/>
+</body>
+</html>
