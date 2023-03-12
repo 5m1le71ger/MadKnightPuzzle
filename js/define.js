@@ -268,7 +268,7 @@ function BlockCollect(){
         for(let i=0;i<obj.length;i++){
             s += ' ' + obj[i].getCode()
         }
-        s = s.sbustr(1)
+        s = s.substr(1)
         return s
     }
     obj._getMaxBlockCount = function(sortIndexs,sumValue){
@@ -335,9 +335,10 @@ function BlockCollect(){
             //await wait(1).then(async ()=>{
                 let count = mathpc.CCount(sortIndexs.length,blockCount)
                 let index = 0
-                funcProgress('开始搜索'+sortIndexs.length+'中取'+blockCount+'的25块组合,')
+                //funcProgress('开始搜索'+sortIndexs.length+'中取'+blockCount+'的25块组合,')
                 await mathpc.CAsync(sortIndexs.length,blockCount,async function(serial){
                     index ++
+                    funcProgress('开始搜索'+sortIndexs.length+'中取'+blockCount+'的25块组合,'+index+'/'+count)
                     let sizeCalc = 0;
                     serial.forEach(function(v,i,ary){
                         sizeCalc += obj[serial[i]].blockSize

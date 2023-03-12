@@ -116,13 +116,13 @@ async function solutionAsync(blockCollect,funcProgress)
         if(!bMatched){
             models.push(model)
             await mathpc.PAllAsync(serial.length,async function(serialP){
-               await wait(1).then(async ()=>{
+               //await wait(1).then(async ()=>{
                     let serialCopy = new Array()
                     for(let i=0;i<serialP.length;i++){
                         serialCopy.push(serial[serialP[i]])
                     }
                     serials.push(serialCopy)
-               })
+               //})
             })
         }
         var debug = 1
