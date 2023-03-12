@@ -1,11 +1,14 @@
+<!-- $Id: example.html,v 1.4 2006/03/27 02:44:36 pat Exp $ -->
+<!DOCTYPE HTML>
 <html>
 <head>
-</head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script type="text/javascript" src="js/mathpc.js"></script>
-<script type="text/javascript" src="js/define.js"></script>
-<script type="text/javascript" src="js/draw.js"></script>
-<script type="text/javascript" src="js/solution.js"></script>
+    <!--<meta http-equiv="Content-Type" content="text/html; charset=gb2312">-->
+    <title>疯狂骑士团宝石拼图工具1.0</title>
+    <!--<link type="text/css" href="style.css" rel="stylesheet" />-->
+    <script type="text/javascript" src="js/mathpc.js"></script>
+    <script type="text/javascript" src="js/define.js"></script>
+    <script type="text/javascript" src="js/draw.js"></script>
+    <script type="text/javascript" src="js/solution.js"></script>
 <script>
     var blockCollect = BlockCollect()
     var canvasBlocks = null
@@ -46,7 +49,7 @@
 
     function btnadd()
     {
-        let text = document.getElementById('textarea_code').value;
+        let text = document.getElementById('input_add').value;
         if(!blockCollect.add(text)){
             alert('错误的输入')
             return;
@@ -139,24 +142,53 @@
         })
     }
 </script>
+</head>
 <body>
-<button id="btn_add" onclick=btnadd()>增加</button> 
-<button id="btn_delete" onclick=btndelete()>删除</button><br/>
-<textarea id="textarea_code" rows="10" cols="100" value='660 660 660 660 700 444 260 550' aria-label="blockCode"></textarea>
-<br/><br/>
+    <h1>
+        疯狂骑士团宝石拼图工具1.0:</h1>
+    <div class="demo">
+        <div id="tabs">
+            <div id="tabs-1">
+                <table border="1" align="left">
+                    <tr>
+                        <td>
+                            <div style="text-align: left">
+                                <button id="btn_add" onclick=btnadd() >添加宝石代码</button> 
+                                <input id="input_add" type="text" size="20" value='' /><br />
+                                <button id="btn_delete" onclick=btndelete()>删除宝石代码</button>
+                                <input id="input_delete" type="text" size="20" value='' /><br />
 <canvas id="canvasBlocks" width="500" height="400" style="border:1px solid #000000;">
 您的浏览器不支持 HTML5 canvas 标签。
 </canvas><br/><br/>
-<button id="btn_calc" onclick=btncalc()>开始计算</button> <label id="label_progress" name="label_progress"></label><br/>
-一共找到 <label id="label_count" name="label_count"></label> 个结果
-<br/>
-<button id="btn_left" onclick=btnleft()><</button>
-<label id="label_select" name="label_select"></label>
-<button id="btn_right" onclick=btnright()>></button><br/>
-<canvas id="canvasSolution" width="500" height="400" style="border:1px solid #000000;">
-您的浏览器不支持 HTML5 canvas 标签。
-</canvas>
-<button id="btn_test" onclick=btntest()>测试</button><br/><br/>
-<button id="btn_test2" onclick=btntest2()>测试2</button><br/><br/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <table border="1" align="left;float:right">
+                    <tr>
+                        <td>
+                            <div style="text-align: left">
+                                <button id="btn_calc" onclick=btncalc()>开始计算</button><br/>
+                                <label id="label_progress" name="label_progress"></label><br/>
+                                一共找到 <label id="label_count" name="label_count"></label> 个结果<br/>
+                                <button id="btn_left" onclick=btnleft()><</button>
+                                <label id="label_select" name="label_select"></label>
+                                <button id="btn_right" onclick=btnright()>></button><br/>
+                                <canvas id="canvasSolution" width="500" height="400" style="border:1px solid #000000;">
+                                您的浏览器不支持 HTML5 canvas 标签。
+                                </canvas>
+
+                            </div>
+                            <button id="btn_test" onclick=btntest()>测试</button>
+                            <button id="btn_test2" onclick=btntest2()>测试2</button><br/>
+
+                        </td>
+                    </tr>
+                </table>
+                  </div>
+            </div>
+            <!-- End tabs-1 -->
+        </div>
+        <!-- End tabs -->
 </body>
 </html>
