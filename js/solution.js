@@ -96,13 +96,8 @@ function solution(blockCollect)
     return boardSolution
 }
 
-async function solutionAsync(blockCollect,funcProgress)
-{
-    funcProgress('开始搜索所有能凑齐25块的组合...')
-    let boardSolution = new Array()
-    let serials = new Array()
-    let models = new Array()
-    let r = await blockCollect.traverseBySumAsync(25,async function(serial){
+async function onTraverseBySumAsync(serial,progressInfo,serials,models){
+    let f = async () =>{
         let model = getSerialModel(serial)
         let s_model = JSON.stringify(model)
         let bMatched = false;
@@ -115,23 +110,50 @@ async function solutionAsync(blockCollect,funcProgress)
         }
         if(!bMatched){
             models.push(model)
+            let count = mathpc.PCount(serial.length,serial.length)
+            let index = 0;
             await mathpc.PAllAsync(serial.length,async function(serialP){
-               //await wait(1).then(async ()=>{
+                index ++
+                let f = () =>{
                     let serialCopy = new Array()
                     for(let i=0;i<serialP.length;i++){
                         serialCopy.push(serial[serialP[i]])
                     }
                     serials.push(serialCopy)
-               //})
+                }
+                if(timerFlag){
+                    timerFlag = false
+                    await wait(1).then(async ()=>{
+                        funcProgress(progressInfo + ', ' + index + '/' + count)
+                        await f()
+                    })
+                }else{
+                    await f()
+                }
             })
         }
-        var debug = 1
+    }
+    if(timerFlag){
+        timerFlag = false
+        await wait(1).then(async ()=>{
+            funcProgress(progressInfo)
+            f()
+        })
+    }else{
+        f()
+    }
+}
+async function solutionAsync(blockCollect,funcProgress)
+{
+    funcProgress('开始搜索所有能凑齐25块的组合...')
+    let boardSolution = new Array()
+    let serials = new Array()
+    let models = new Array()
+    let r = await blockCollect.traverseBySumAsync(25,async function(serial,progressInfo){
+        await onTraverseBySumAsync(serial,progressInfo,serials,models)
     },funcProgress)
     for(let index=0;index<serials.length;index++){
-        let per = Math.trunc(index * 100 / serials.length)
-        funcProgress('开始遍历排列搜索到的组合:'+per+'%,'+index+'/'+serials.length)
-        //console.info('index='+index)
-        await wait(1).then(()=>{
+        let f = ()=>{
             let board = Board()
             board.init()
             let serial = serials[index]
@@ -169,7 +191,17 @@ async function solutionAsync(blockCollect,funcProgress)
                     boardSolution.push(board)
                 }
             }
-        })
+        }
+        if(timerFlag){
+            timerFlag = false
+            await wait(1).then(async ()=>{
+                let per = Math.trunc(index * 100 / serials.length)
+                funcProgress('开始遍历排列搜索到的组合:'+per+'%,'+index+'/'+serials.length)
+                f();
+            })
+        }else{
+            f()
+        }
     }
 
    return boardSolution

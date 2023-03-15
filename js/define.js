@@ -1,3 +1,4 @@
+var timerFlag = false
 function wait(ms){
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -338,13 +339,14 @@ function BlockCollect(){
                 //funcProgress('开始搜索'+sortIndexs.length+'中取'+blockCount+'的25块组合,')
                 await mathpc.CAsync(sortIndexs.length,blockCount,async function(serial){
                     index ++
-                    funcProgress('开始搜索'+sortIndexs.length+'中取'+blockCount+'的25块组合,'+index+'/'+count)
+                    let progressInfo = '开始搜索'+sortIndexs.length+'中取'+blockCount+'的25块组合,'+index+'/'+count
+                    //funcProgress('开始搜索'+sortIndexs.length+'中取'+blockCount+'的25块组合,'+index+'/'+count)
                     let sizeCalc = 0;
                     serial.forEach(function(v,i,ary){
                         sizeCalc += obj[serial[i]].blockSize
                     })
                     if(sizeCalc == sumValue){
-                        await funcSerial(serial)
+                        await funcSerial(serial,progressInfo)
                     }
 
                 })

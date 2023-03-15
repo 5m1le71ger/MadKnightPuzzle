@@ -93,6 +93,11 @@
         drawBlockCollect(blockCollect,ctxBlocks,10,10,canvasBlocks)
         alert('载入宝石列表成功')
     }
+    var timer = null
+    function loopTimer() {
+        timerFlag = true
+        timer = setTimeout(loopTimer, 300);
+    }
     function btncalc()
     {
         document.all.label_progress.innerText = ''
@@ -100,6 +105,8 @@
         document.all.label_select.innerText = '';
         clearCanvas(canvasSolution,ctxSolution)
         document.getElementById("btn_add").setAttribute("disabled", true);
+        timer = setTimeout(loopTimer, 300);
+        return
         solutionAsync(blockCollect, (progressInfo) =>{
             document.all.label_progress.innerText = progressInfo
         }).then( bs =>{
@@ -113,6 +120,8 @@
             }
             document.all.label_progress.innerText = '完成了100%'
             document.getElementById("btn_add").removeAttribute ("disabled");
+            clearTimeout(timer)
+            timer = null
         })
     }
     function btnleft()
