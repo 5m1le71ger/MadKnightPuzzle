@@ -13,19 +13,29 @@
       var calcBlocks = BlockCollect()
       window.localStorage.setItem('over', "0");
       calcBlocks.loadStorge('calcBlocks')
-      solutionAsync(calcBlocks, (progressInfo) =>{
-          window.localStorage.setItem('progressInfo', progressInfo);
-          //document.all.label_progress.innerText = progressInfo
-      }).then( bs =>{
-          let s = ''
-          for(let i=0;i<bs.length;i++){
-            s += '$' + bs[i].serialize();
-          }
-          s = s.substr(1)
-          window.localStorage.setItem('boardSolution', s);
-          window.localStorage.setItem('label_count', bs.length.toString());
-          window.localStorage.setItem('over', "1");
-      })
+      let bs = solution(calcBlocks)
+      let s = ''
+      for(let i=0;i<bs.length;i++){
+        s += '$' + bs[i].serialize();
+      }
+      s = s.substr(1)
+      window.localStorage.setItem('boardSolution', s);
+      window.localStorage.setItem('label_count', bs.length.toString());
+      window.localStorage.setItem('over', "1");
+
+      // solutionAsync(calcBlocks, (progressInfo) =>{
+      //     window.localStorage.setItem('progressInfo', progressInfo);
+      //     //document.all.label_progress.innerText = progressInfo
+      // }).then( bs =>{
+      //     let s = ''
+      //     for(let i=0;i<bs.length;i++){
+      //       s += '$' + bs[i].serialize();
+      //     }
+      //     s = s.substr(1)
+      //     window.localStorage.setItem('boardSolution', s);
+      //     window.localStorage.setItem('label_count', bs.length.toString());
+      //     window.localStorage.setItem('over', "1");
+      // })
     }
     var timer = null
     function loopTimer() {

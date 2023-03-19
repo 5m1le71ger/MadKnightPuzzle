@@ -19,6 +19,7 @@
     var ctxSolution = null
     document.onreadystatechange = function () {
         if (document.readyState === "interactive") {
+            window.localStorage.setItem('status','0')
             canvasBlocks = document.getElementById('canvasBlocks');
             ctxBlocks = canvasBlocks.getContext('2d');
             canvasSolution = document.getElementById('canvasSolution');
@@ -119,7 +120,7 @@
     var timer2 = null
     function loopTimer2() {
         document.all.label_progress.innerText = window.localStorage.getItem('progressInfo');
-        document.all.label_count.innerText = window.localStorage.getItem('labelCount');
+        document.all.label_count.innerText = window.localStorage.getItem('label_count');
         let over = window.localStorage.getItem('over')
         if(over == 1){
             select_result = 0
@@ -205,7 +206,7 @@
         //     console.info(buffer)
         // })
         //const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-        mathpc.CAsync(4,2, function(buffer){
+        mathpc.CAsync(4, 2, function(buffer){
             console.info(buffer)
         })
         // mathpc.P(5,2,function(buffer){

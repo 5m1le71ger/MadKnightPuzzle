@@ -32,7 +32,9 @@ var mathpc = {
         for(let i=0;i<k;i++){
             serial.push(i)
         }
-        func(serial)
+        if(!func(serial)){
+            return
+        }
         if(k<=0){
             return
         }
@@ -50,7 +52,9 @@ var mathpc = {
                     for(let i=pos;i<=k-1;i++){
                         serial[i]=v+(i-pos)
                     }
-                    func(serial)
+                    if(!func(serial)){
+                        return
+                    }
                     break
                 }
                 //进位处理
@@ -150,7 +154,9 @@ var mathpc = {
         while(stack.length>0){
             let node = stack[stack.length-1]
             if(node.i == n){//跑到一个叶子节点上了
-                func(serial)
+                if(!func(serial)){
+                    return
+                }
                 stack.pop()
             }else{
                 if(node.k < n){
@@ -214,8 +220,12 @@ var mathpc = {
                 for(let i=0;i<buffPAll.length;i++){
                     serial.push(buffC[buffPAll[i]])
                 }
-                func(serial)
+                if(!func(serial)){
+                    return false
+                }
+                return true
             })
+            return true
         })
     },
 }

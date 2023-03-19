@@ -342,9 +342,11 @@ function BlockCollect(){
                     sizeCalc += obj[serial[i]].blockSize
                 })
                 if(sizeCalc == sumValue){
-                    func(serial)
+                    if(!func(serial)){
+                        return false
+                    }
                 }
-
+                return true
             })
         }
     }

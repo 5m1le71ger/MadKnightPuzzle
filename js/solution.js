@@ -27,10 +27,49 @@ function compareMaps(map1, map2) {
     return true;
 }
 
-function solution(bc)
-{
+function puzzle(serial,bc,bs){
+    let board = Board()
+    board.init()
+    let placedAll = true
+    for(let i=0;i<serial.length;i++){
+        let placed = false
+        for(let x=0;x<7;x++){
+            for(let y=0;y<7;y++){
+                if(board.isCanPlace(bc[serial[i]],x,y)){
+                    board.place(bc[serial[i]],x,y)
+                    //console.info('board:place(' + x + ',' + y + ')')
+                    //console.info(board.dump())
+                    placed = true
+                    break;
+                }
+            }
+            if(placed){
+                break;
+            }
+        }
+        if(!placed){
+            placedAll = false
+            break;
+        }
+    }
+    if(placedAll){
+        let bFind = false
+        for(let i=0;i<bs.length;i++){
+            if(bs[i].equal(board)){
+                bFind = true;
+                break;
+            }
+        }
+        if(!bFind){
+            bs.push(board)
+            return true
+        }
+    }
+    return false
+}
+
+function solution(bc){
     let boardSolution = new Array()
-    let serials = new Array()
     let models = new Array()
     bc.traverseBySum(25,function(serial){
         let model = getSerialModel(bc,serial)
@@ -45,54 +84,20 @@ function solution(bc)
         }
         if(!bMatched){
             models.push(model)
+            let ok = false
             mathpc.PAll(serial.length,function(serialP){
                 let serialCopy = new Array()
                 for(let i=0;i<serialP.length;i++){
                     serialCopy.push(serial[serialP[i]])
                 }
-                serials.push(serialCopy)
+                ok = puzzle(serialCopy,bc,boardSolution)
+                if(ok){
+                    return false
+                }
             })
         }
+        return true
     })
-    for(let index=0;index<serials.length;index++){
-        let board = Board()
-        board.init()
-        let serial = serials[index]
-        let placedAll = true
-        for(let i=0;i<serial.length;i++){
-            let placed = false
-            for(let x=0;x<7;x++){
-                for(let y=0;y<7;y++){
-                    if(board.isCanPlace(bc[serial[i]],x,y)){
-                        board.place(bc[serial[i]],x,y)
-                        console.info('board:place(' + x + ',' + y + ')')
-                        console.info(board.dump())
-                        placed = true
-                        break;
-                    }
-                }
-                if(placed){
-                    break;
-                }
-            }
-            if(!placed){
-                placedAll = false
-                break;
-            }
-        }
-        if(placedAll){
-            let bFind = false
-            for(let i=0;i<boardSolution.length;i++){
-                if(boardSolution[i].equal(board)){
-                    bFind = true;
-                    break;
-                }
-            }
-            if(!bFind){
-                boardSolution.push(board)
-            }
-        }
-    }
     return boardSolution
 }
 
@@ -154,7 +159,7 @@ async function solutionAsync(bc,funcProgress)
     },funcProgress)
     for(let index=0;index<serials.length;index++){
             if(index == 46){
-                debugger
+                //debugger
             }
         let f = ()=>{
             let board = Board()
