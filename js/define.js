@@ -390,10 +390,12 @@ function BlockCollect(){
             return false
         }
         let s = window.localStorage.getItem(name);
-        let codes = s.split('|')
-        obj.delAll()
-        for(let i=0;i<codes.length;i++){
-            obj.add(codes[i])
+        if(s != null && s.length > 0){
+            let codes = s.split('|')
+            obj.delAll()
+            for(let i=0;i<codes.length;i++){
+                obj.add(codes[i])
+            }
         }
         return true
     }
