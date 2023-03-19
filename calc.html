@@ -9,9 +9,36 @@
       <script type="text/javascript" src="js/solution.js"></script>
   </head>
   <script type="text/javascript">
-      window.onload=function runoob(){
+    function doCalc(){
+      var calcBlocks = BlockCollect()
+      window.localStorage.setItem('over', "0");
+      calcBlocks.loadStorge('calcBlocks')
+      solutionAsync(calcBlocks, (progressInfo) =>{
+          window.localStorage.setItem('progressInfo', progressInfo);
+          //document.all.label_progress.innerText = progressInfo
+      }).then( bs =>{
+          let s = ''
+          for(let i=0;i<bs.length;i++){
+            s += '$' + bs[i].serialize();
+          }
+          s = s.substr(1)
+          window.localStorage.setItem('boardSolution', s);
+          window.localStorage.setItem('label_count', bs.length.toString());
+          window.localStorage.setItem('over', "1");
+      })
+    }
+    var timer = null
+    function loopTimer() {
+      let status = window.localStorage.getItem('status');
+      if(status == '1'){
+        doCalc();
+        window.localStorage.setItem('status','0');
       }
+      timer = setTimeout(loopTimer, 300);
+    }
+    timer = setTimeout(loopTimer, 300);
   </script>
   <body>
+    <label id="label_info" name="label_info"></label>
   </body>
 </html>

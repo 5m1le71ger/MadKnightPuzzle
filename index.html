@@ -13,7 +13,7 @@
     var blockCollect = BlockCollect()
     var canvasBlocks = null
     var ctxBlocks = null
-    var boardSolution = null
+    var boardSolution = new Array()
     var select_result = 0
     var canvasSolution = null
     var ctxSolution = null
@@ -67,25 +67,17 @@
     }
     function btnsave()
     {
-        if (!window.localStorage){
+        if(!blockCollect.saveStorge('blockCollect')){
             alert('无法访问本地缓存')
             return
         }
-        let s = blockCollect.getCodes()
-        window.localStorage.setItem('blockCollect', s);
         alert('保存宝石列表成功')
     }
     function btnload()
     {
-        if (!window.localStorage){
+        if(!blockCollect.loadStorge('blockCollect')){
             alert('无法访问本地缓存')
             return
-        }
-        let s = window.localStorage.getItem('blockCollect');
-        let codes = s.split(' ')
-        blockCollect.delAll()
-        for(let i=0;i<codes.length;i++){
-            blockCollect.add(codes[i])
         }
         document.getElementById('btn_delete').disabled = true;
         document.getElementById('label_delete').innerText = blockCollect.getSelectCode()
@@ -111,18 +103,67 @@
             document.all.label_progress.innerText = progressInfo
         }).then( bs =>{
             boardSolution = bs
-            document.all.label_count.innerText = boardSolution.length.toString();
-            select_result = 0;
-            document.all.label_select.innerText = select_result.toString();
+            document.all.label_count.innerText = boardSolution.length.toString()
+            select_result = 0
+            document.all.label_select.innerText = select_result.toString()
             clearCanvas(canvasSolution,ctxSolution)
             if(boardSolution.length > 0){
                 drawBoard(boardSolution[select_result],ctxSolution,10,10)
             }
             document.all.label_progress.innerText = '完成了100%'
-            document.getElementById("btn_add").removeAttribute ("disabled");
+            document.getElementById("btn_add").removeAttribute ("disabled")
             clearTimeout(timer)
             timer = null
         })
+    }
+    var timer2 = null
+    function loopTimer2() {
+        document.all.label_progress.innerText = window.localStorage.getItem('progressInfo');
+        document.all.label_count.innerText = window.localStorage.getItem('labelCount');
+        let over = window.localStorage.getItem('over')
+        if(over == 1){
+            select_result = 0
+            clearCanvas(canvasSolution,ctxSolution)
+            boardSolution.length = 0
+            let s = window.localStorage.getItem('boardSolution')
+            if(s.length > 0){
+                let ss = s.split('$')
+                for(let i=0;i<ss.length;i++){
+                    let board = new Board().init().deserialize(ss[i])
+                    boardSolution.push(board)
+                }
+            }
+            if(boardSolution.length > 0){
+                drawBoard(boardSolution[select_result],ctxSolution,10,10)
+            }
+            document.all.label_progress.innerText = '完成了100%'
+            document.getElementById("btn_add").removeAttribute ("disabled")
+            clearTimeout(timer)
+            timer = null
+        }else{
+            timer2 = setTimeout(loopTimer2, 500);
+        }
+    }
+    function btncalc2()
+    {
+        //status: 0 未运行 1 正在运行
+        let status = window.localStorage.getItem('status');
+        if(status == '1'){
+            alert('正在计算中')
+            return
+        }
+        document.all.label_progress.innerText = ''
+        document.all.label_count.innerText = ''
+        document.all.label_select.innerText = ''
+        clearCanvas(canvasSolution,ctxSolution)
+        document.getElementById("btn_add").setAttribute("disabled", true)
+        blockCollect.saveStorge('calcBlocks')
+        // let url = "calc.html"
+        // let windowFeatures = "location=no,width=320,height=200,left=0,top=0"
+        // window.open(url, 'calc', windowFeatures)
+        window.localStorage.setItem('status','1');
+        timer2 = setTimeout(loopTimer2, 500);
+
     }
     function btnleft()
     {
@@ -207,7 +248,8 @@
                     <tr>
                         <td>
                             <div style="text-align: left">
-                                <button id="btn_calc" onclick=btncalc()>开始计算</button><br/>
+                                <button id="btn_calc" onclick=btncalc2()>开始计算</button><br/>
+                                <iframe id="calc" title="计算" width="200" height="50" src="calc.html"> </iframe>
                                 <label id="label_progress" name="label_progress"></label><br/>
                                 一共找到 <label id="label_count" name="label_count"></label> 个结果<br/>
                                 <button id="btn_left" onclick=btnleft()><</button>

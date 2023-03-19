@@ -216,6 +216,29 @@ function Board(){
         // }
         return state
     }
+    obj.serialize = function(){
+        let s = ''
+        for(let i=0;i<obj.blocks.length;i++){
+            let block = obj.blocks[i]
+            s += '|' + block.getCode() + ',' + block.x + ',' + block.y;
+        }
+        s = s.substr(1)
+        return s
+    }
+    obj.deserialize = function(s){
+        obj.blocks.length = 0
+        if(s.length == 0){
+            return obj
+        }
+        let datas = s.split('|')
+        for(let i=0;i<datas.length;i++){
+            let ss = datas[i].split(',')
+            let block = new Block()
+            block.init(ss[0])
+            obj.place(block,ss[1],ss[2])
+        }
+        return obj
+    }
     obj.dump = function(){
         let s = ''
         obj.traverse(function(i,j,v){
@@ -267,7 +290,7 @@ function BlockCollect(){
     obj.getCodes = function(){
         let s = ''
         for(let i=0;i<obj.length;i++){
-            s += ' ' + obj[i].getCode()
+            s += '|' + obj[i].getCode()
         }
         s = s.substr(1)
         return s
@@ -351,6 +374,26 @@ function BlockCollect(){
 
                 })
            //})
+        }
+        return true
+    }
+    obj.saveStorge = function(name){
+        if (!window.localStorage){
+            return false
+        }
+        let s = obj.getCodes()
+        window.localStorage.setItem(name, s);
+        return true
+    }
+    obj.loadStorge = function(name){
+        if (!window.localStorage){
+            return false
+        }
+        let s = window.localStorage.getItem(name);
+        let codes = s.split('|')
+        obj.delAll()
+        for(let i=0;i<codes.length;i++){
+            obj.add(codes[i])
         }
         return true
     }

@@ -1,7 +1,7 @@
-function getSerialModel(serial){
+function getSerialModel(bc,serial){
     let model = {}
     for(let i=0;i<serial.length;i++){
-        let code = blockCollect[serial[i]].getCode()
+        let code = bc[serial[i]].getCode()
         if(model[code] === undefined){
             model[code] = 1
         }else{
@@ -27,13 +27,13 @@ function compareMaps(map1, map2) {
     return true;
 }
 
-function solution(blockCollect)
+function solution(bc)
 {
     let boardSolution = new Array()
     let serials = new Array()
     let models = new Array()
-    blockCollect.traverseBySum(25,function(serial){
-        let model = getSerialModel(serial)
+    bc.traverseBySum(25,function(serial){
+        let model = getSerialModel(bc,serial)
         let s_model = JSON.stringify(model)
         let bMatched = false;
         for(let i=0;i<models.length;i++){
@@ -63,8 +63,8 @@ function solution(blockCollect)
             let placed = false
             for(let x=0;x<7;x++){
                 for(let y=0;y<7;y++){
-                    if(board.isCanPlace(blockCollect[serial[i]],x,y)){
-                        board.place(blockCollect[serial[i]],x,y)
+                    if(board.isCanPlace(bc[serial[i]],x,y)){
+                        board.place(bc[serial[i]],x,y)
                         console.info('board:place(' + x + ',' + y + ')')
                         console.info(board.dump())
                         placed = true
@@ -96,9 +96,9 @@ function solution(blockCollect)
     return boardSolution
 }
 
-async function onTraverseBySumAsync(serial,progressInfo,serials,models){
+async function onTraverseBySumAsync(bc,serial,progressInfo,serials,models){
     let f = async () =>{
-        let model = getSerialModel(serial)
+        let model = getSerialModel(bc,serial)
         let s_model = JSON.stringify(model)
         let bMatched = false;
         for(let i=0;i<models.length;i++){
@@ -143,14 +143,14 @@ async function onTraverseBySumAsync(serial,progressInfo,serials,models){
         f()
     }
 }
-async function solutionAsync(blockCollect,funcProgress)
+async function solutionAsync(bc,funcProgress)
 {
     funcProgress('开始搜索所有能凑齐25块的组合...')
     let boardSolution = new Array()
     let serials = new Array()
     let models = new Array()
-    let r = await blockCollect.traverseBySumAsync(25,async function(serial,progressInfo){
-        await onTraverseBySumAsync(serial,progressInfo,serials,models)
+    let r = await bc.traverseBySumAsync(25,async function(serial,progressInfo){
+        await onTraverseBySumAsync(bc,serial,progressInfo,serials,models)
     },funcProgress)
     for(let index=0;index<serials.length;index++){
         let f = ()=>{
@@ -162,8 +162,8 @@ async function solutionAsync(blockCollect,funcProgress)
                 let placed = false
                 for(let x=0;x<7;x++){
                     for(let y=0;y<7;y++){
-                        if(board.isCanPlace(blockCollect[serial[i]],x,y)){
-                            board.place(blockCollect[serial[i]],x,y)
+                        if(board.isCanPlace(bc[serial[i]],x,y)){
+                            board.place(bc[serial[i]],x,y)
                             //console.info('board:place(' + x + ',' + y + ')')
                             //console.info(board.dump())
                             placed = true
