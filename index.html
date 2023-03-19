@@ -147,9 +147,9 @@
     }
     function btncalc2()
     {
-        //status: 0 未运行 1 正在运行
+        //status: 0 未运行 1 启动运行 2 运行中
         let status = window.localStorage.getItem('status');
-        if(status == '1'){
+        if(status != '0'){
             alert('正在计算中')
             return
         }

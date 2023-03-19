@@ -94,6 +94,7 @@ function solution(bc){
                 if(ok){
                     return false
                 }
+                return true
             })
         }
         return true

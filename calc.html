@@ -42,9 +42,12 @@
       let status = window.localStorage.getItem('status');
       if(status == '1'){
         document.all.label_info.innerText = '正在计算...'
-        doCalc();
-        window.localStorage.setItem('status','0');
-        document.all.label_info.innerText = '计算完毕'
+        setTimeout(()=>{
+	        window.localStorage.setItem('status','2');
+	        doCalc();
+	        window.localStorage.setItem('status','0');
+	        document.all.label_info.innerText = '计算完毕'
+       	},1)
       }
       timer = setTimeout(loopTimer, 300);
     }
