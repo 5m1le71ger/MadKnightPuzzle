@@ -117,10 +117,13 @@ function Board(){
         return obj
     }
     obj.equal = function(obj2){
-        if(obj.length != obj2.length){
+        if(obj.blocks.length != obj2.blocks.length){
             return false;
         }
-        for(let i=0;i<obj.length;i++){
+        for(let i=0;i<obj.blocks.length;i++){
+            if(typeof obj.blocks[i] === 'undefined'){
+                let debug = 1;
+            }
             if(!obj.blocks[i].equal(obj2.blocks[i])){
                 return false;
             }

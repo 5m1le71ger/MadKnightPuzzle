@@ -153,6 +153,9 @@ async function solutionAsync(bc,funcProgress)
         await onTraverseBySumAsync(bc,serial,progressInfo,serials,models)
     },funcProgress)
     for(let index=0;index<serials.length;index++){
+        if(index == 46){
+            debugger
+        }
         let f = ()=>{
             let board = Board()
             board.init()
