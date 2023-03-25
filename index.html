@@ -192,7 +192,14 @@
     }
     function btntest()
     {
-        // let board = Board()
+        mathpc.generateCombinations(5, 3, (combination) => {
+          console.log(`Combination: [${combination}]`);
+        });
+        mathpc.generatePermutations(5, (permutation) => {
+            console.log(`Permutation: [${permutation}]`);
+        });    
+
+         // let board = Board()
         // board.init()
         // console.info(board.dump())
         // let block = Block()
@@ -206,9 +213,9 @@
         //     console.info(buffer)
         // })
         //const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-        mathpc.CAsync(4, 2, function(buffer){
-            console.info(buffer)
-        })
+        // mathpc.CAsync(4, 2, function(buffer){
+        //     console.info(buffer)
+        // })
         // mathpc.P(5,2,function(buffer){
         //     console.info(buffer)
         // })

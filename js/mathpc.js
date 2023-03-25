@@ -67,6 +67,66 @@ var mathpc = {
         }
     },
 
+    generateCombinations : (n, k, callback, batchSize = 1000) =>{
+        const max = 1 << n;
+        let i = 0;
+        let count = 0;
+        function countCombinationBits(num) {
+            let count = 0;
+            while (num > 0) {
+              count += num & 1;
+              num >>= 1;
+            }
+            return count;
+        }
+        function traverseBatch() {
+          while (i < max && count < batchSize) {
+            if (countCombinationBits(i) === k) {
+              const combination = [];
+              for (let j = 0; j < n; j++) {
+                if (i & (1 << j)) {
+                  combination.push(j);
+                }
+              }
+              callback(combination);
+              count++;
+            }
+            i++;
+          }
+          if (i < max) {
+            count = 0;
+            // Use setTimeout to allow UI updates during the traversal
+            setTimeout(traverseBatch, 0);
+          }
+        }
+        traverseBatch();
+    },
+
+    generatePermutations : (n, callback, batchSize = 1000) => {
+        const elements = new Array(n);
+        for (let i = 0; i < n; i++) {
+          elements[i] = i;
+        }
+        let count = 0;
+        function traverseBatch(startIndex) {
+          if (startIndex >= n) {
+            callback(elements);
+            count++;
+            return;
+          }
+          for (let i = startIndex; i < Math.min(startIndex + batchSize, n); i++) {
+            [elements[startIndex], elements[i]] = [elements[i], elements[startIndex]];
+            traverseBatch(startIndex + 1);
+            [elements[startIndex], elements[i]] = [elements[i], elements[startIndex]];
+          }
+          if (startIndex + batchSize < n) {
+            // Use setTimeout to allow UI updates during the traversal
+            setTimeout(() => traverseBatch(startIndex + batchSize), 0);
+          }
+        }
+        traverseBatch(0);
+    },
+
     CAsync : async (n,k,func) => {
         let serial = new Array()
         for(let i=0;i<k;i++){
