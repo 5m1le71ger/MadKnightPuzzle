@@ -192,12 +192,18 @@
     }
     function btntest()
     {
-        mathpc.generateCombinations(5, 3, (combination) => {
-          console.log(`Combination: [${combination}]`);
-        });
-        mathpc.generatePermutations(5, (permutation) => {
-            console.log(`Permutation: [${permutation}]`);
-        });    
+        // mathpc.generateCombinations(15, 7, (combination) => {
+        //     console.log(`Combination: [${combination}]`);
+        // }, (index, size) =>{
+        //     let p = index / size;
+        //     console.log(`Combination: ${index}/${size}, ${p}%`);
+        // },5);
+        mathpc.generatePermutations(3, (permutation,index) => {
+            console.log(`Permutation: [${permutation}],${index}`);
+        },(index, size,start) =>{
+            let p = index / size;
+            console.log(`Combination: ${index}/${size}, ${p}%,${start}`);
+        },1);    
 
          // let board = Board()
         // board.init()
