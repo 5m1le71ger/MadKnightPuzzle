@@ -67,7 +67,7 @@ var mathpc = {
         }
     },
 
-    generateCombinations : (n, k, callback, batchSize = 1000) =>{
+    generateCombinations : (n, k, callback, callbackProcess, batchSize = 1000) =>{
         const max = 1 << n;
         let i = 0;
         let count = 0;
@@ -80,6 +80,7 @@ var mathpc = {
             return count;
         }
         function traverseBatch() {
+          callbackProcess(i,max)
           while (i < max && count < batchSize) {
             if (countCombinationBits(i) === k) {
               const combination = [];
@@ -102,29 +103,37 @@ var mathpc = {
         traverseBatch();
     },
 
-    generatePermutations : (n, callback, batchSize = 1000) => {
+    generatePermutations : async (n, callback, callbackProcess, batchSize = 1000) => {
+        let processSize = mathpc.factorial(n)
+        let processIndex = 0;
         const elements = new Array(n);
         for (let i = 0; i < n; i++) {
           elements[i] = i;
         }
         let count = 0;
-        function traverseBatch(startIndex) {
+        var test = 0
+        async function traverseBatch(startIndex) {
           if (startIndex >= n) {
-            callback(elements);
+            processIndex ++;
+            callback(elements, processIndex);
             count++;
             return;
           }
           for (let i = startIndex; i < Math.min(startIndex + batchSize, n); i++) {
             [elements[startIndex], elements[i]] = [elements[i], elements[startIndex]];
-            traverseBatch(startIndex + 1);
+            await traverseBatch(startIndex + 1);
             [elements[startIndex], elements[i]] = [elements[i], elements[startIndex]];
           }
           if (startIndex + batchSize < n) {
             // Use setTimeout to allow UI updates during the traversal
-            setTimeout(() => traverseBatch(startIndex + batchSize), 0);
+            test ++;
+            //callbackProcess(test,processSize,startIndex )
+            await setTimeout( async () => {
+                    await traverseBatch(startIndex + batchSize)
+                }, 0);
           }
         }
-        traverseBatch(0);
+        await traverseBatch(0);
     },
 
     CAsync : async (n,k,func) => {

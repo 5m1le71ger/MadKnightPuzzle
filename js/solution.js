@@ -71,7 +71,7 @@ function puzzle(serial,bc,bs){
 function solution(bc){
     let boardSolution = new Array()
     let models = new Array()
-    bc.traverseBySum(25,function(serial){
+    bc.traverseBySum(25, function(serial){
         let model = getSerialModel(bc,serial)
         let s_model = JSON.stringify(model)
         let bMatched = false;
@@ -82,9 +82,7 @@ function solution(bc){
                 break;
             }
         }
-        if(!bMatched){
-            models.push(model)
-            let ok = false
+        let f = ()=>{
             mathpc.PAll(serial.length,function(serialP){
                 let serialCopy = new Array()
                 for(let i=0;i<serialP.length;i++){
@@ -96,6 +94,11 @@ function solution(bc){
                 }
                 return true
             })
+        }
+        if(!bMatched){
+            models.push(model)
+            let ok = false
+            f()
         }
         return true
     })
